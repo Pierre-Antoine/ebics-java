@@ -59,6 +59,6 @@ Fonctionnement
 
 Pour faire tourner le programme, il faut lancer la ligne de commande suivante :
 
-...
+```
 java -cp ebics-1.0.2.jar org.kopi.ebics.test.FULRequestor.java [arguments]
-...
+```
