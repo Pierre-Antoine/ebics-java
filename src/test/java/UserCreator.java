@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 
+import com.bialx.ebics.Client;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -40,7 +41,7 @@ import org.kopi.ebics.security.UserPasswordHandler;
 import org.kopi.ebics.utils.Constants;
 
 
-public class UserCreator extends EbicsClient {
+public class UserCreator extends Client {
   
   public UserCreator() {
     super();
@@ -197,8 +198,8 @@ public class UserCreator extends EbicsClient {
     userCreator = new UserCreator();
     pwdHandler = new UserPasswordHandler(userId, "2012");
     
-    userCreator.createUser(new URL(EbicsClient.URL_EBICS_SERVER),
-                           EbicsClient.BANK_NAME,
+    userCreator.createUser(new URL(Client.URL_EBICS_SERVER),
+                           Client.BANK_NAME,
                            hostId,
                            partnerId,
                            userId,

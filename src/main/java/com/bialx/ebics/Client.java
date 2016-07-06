@@ -17,7 +17,7 @@
  * $Id:$
  */
 
-package org.kopi.ebics.test;
+package com.bialx.ebics;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -40,9 +40,9 @@ import org.kopi.ebics.messages.Messages;
 import org.kopi.ebics.session.DefaultConfiguration;
 import org.kopi.ebics.utils.Constants;
 
-public class EbicsClient {
+public class Client {
 
-  public EbicsClient() {
+  public Client() {
     configuration = new DefaultConfiguration();
     users = new Hashtable<String, User>();
     partners = new Hashtable<String, Partner>();

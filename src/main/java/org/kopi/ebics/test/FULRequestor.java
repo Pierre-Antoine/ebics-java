@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
+import com.bialx.ebics.Client;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -38,7 +39,7 @@ import org.kopi.ebics.session.OrderType;
 import org.kopi.ebics.session.Product;
 import org.kopi.ebics.utils.Constants;
 
-public class FULRequestor extends EbicsClient {
+public class FULRequestor extends Client {
   
   public FULRequestor() {
     super();

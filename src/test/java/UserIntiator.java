@@ -21,6 +21,7 @@ package org.kopi.ebics.test;
 
 import java.util.Locale;
 
+import com.bialx.ebics.Client;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -34,7 +35,7 @@ import org.kopi.ebics.session.EbicsSession;
 import org.kopi.ebics.session.Product;
 import org.kopi.ebics.utils.Constants;
 
-public class UserIntiator extends EbicsClient {
+public class UserIntiator extends Client {
   
   public UserIntiator() {
     super();
