@@ -65,7 +65,7 @@ public class Client {
   /**
    * Creates a new EBICS bank with the data you should have obtained from the bank.
    * @param url the bank URL
-   * @param url the bank name
+   * @param name the bank name
    * @param hostId the bank host ID
    * @return the created ebics bank
    */

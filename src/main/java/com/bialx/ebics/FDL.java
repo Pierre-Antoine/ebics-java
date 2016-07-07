@@ -48,6 +48,7 @@ public class FDL extends Client {
 
     public void fetchFile(String path,
                           String userId,
+                          String format,
                           Product product,
                           OrderType orderType,
                           boolean isTest,
@@ -58,7 +59,7 @@ public class FDL extends Client {
         EbicsSession                session;
 
         session = new EbicsSession(users.get(userId), configuration);
-        session.addSessionParam("FORMAT", "pain.xxx.cfonb160.dct");
+        session.addSessionParam("FORMAT", format);
         if (isTest) {
             session.addSessionParam("TEST", "true");
         }
@@ -84,16 +85,26 @@ public class FDL extends Client {
         String      hostId = "";
         String      partnerId = "";
         String      userId = "";
-        Date startDate = null;
-        Date endDate = null;
+        String      format = "";
+        String      bankURL = "";
+        Boolean     isTest = false;
+        Date        startDate = null;
+        Date        endDate = null;
+        String      output = "";
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMdd");
 
         CommandLineParser parser = new BasicParser();
         Options options = new Options();
         options.addOption("h", "host", true, "EBICS Host ID");
-        options.addOption("p", "partner", true, "Registred Partner ID for you user");
+        options.addOption("p", "partner", true, "Registred Partner ID for your user");
         options.addOption("u", "user", true, "User ID to initiate" );
+        options.addOption("f", "format", true, "Format type to request" );
+        options.addOption("o", "output", true, "Output file location" );
+        options.addOption("b", "bankurl", true, "Bank Ebics URL" );
+        options.addOption("s", "start", true, "Start date" );
+        options.addOption("e", "end", true, "End date" );
+        options.addOption("t", "test", false, "Test request" );
 
         // Parse the program arguments
         CommandLine commandLine = parser.parse(options, args);
@@ -123,13 +134,41 @@ public class FDL extends Client {
             System.out.println("userId: " + userId);
         }
 
+        if (!commandLine.hasOption('f')) {
+            System.out.println("Format is mandatory");
+            System.exit(0);
+        } else {
+            format = commandLine.getOptionValue('f');
+            System.out.println("format: " + format);
+        }
+
+        if (!commandLine.hasOption('o')) {
+            System.out.println("Output file location is mandatory");
+            System.exit(0);
+        } else {
+            output = commandLine.getOptionValue('f');
+            System.out.println("output: " + output);
+        }
+
+        if (!commandLine.hasOption('b')) {
+            System.out.println("Bank Ebics URL is mandatory");
+            System.exit(0);
+        } else {
+            bankURL = commandLine.getOptionValue('f');
+            System.out.println("bankURL: " + bankURL);
+        }
+
         // optional values
         if (commandLine.hasOption('s')){
-            startDate = format.parse(commandLine.getOptionValue('s'));
+            startDate = dtFormat.parse(commandLine.getOptionValue('s'));
         }
 
         if (commandLine.hasOption('e')){
-            endDate = format.parse(commandLine.getOptionValue('e'));
+            endDate = dtFormat.parse(commandLine.getOptionValue('e'));
+        }
+
+        if (commandLine.hasOption('t')){
+            isTest = true;
         }
 
         FDL fdl;
@@ -138,20 +177,19 @@ public class FDL extends Client {
         String              filePath;
 
         fdl = new FDL();
-        product = new Product("kopiLeft Dev 1.0", Locale.FRANCE, null);
+        product = new Product("Bial-x EBICS FDL", Locale.FRANCE, null);
         pwdHandler = new UserPasswordHandler(userId, "2012");
 
         // Load alredy created user
         fdl.loadUser(hostId, partnerId, userId, pwdHandler);
 
-        filePath = System.getProperty("user.home") + File.separator + "download.txt";
-
         // Send FDL Requets
-        fdl.fetchFile(filePath,
+        fdl.fetchFile(output,
                 userId,
+                format,
                 product,
                 OrderType.FDL,
-                true,
+                isTest,
                 startDate,
                 endDate);
     }
