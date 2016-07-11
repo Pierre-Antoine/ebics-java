@@ -56,6 +56,7 @@ public class DefaultConfiguration implements Configuration {
     properties = new Properties();
     logger = new DefaultEbicsLogger();
     serializationManager = new DefaultSerializationManager();
+    serializationManager.setSerializationDirectory(rootDir + File.separator + getString("serialization.dir.name"));
     traceManager = new DefaultTraceManager();
   }
 

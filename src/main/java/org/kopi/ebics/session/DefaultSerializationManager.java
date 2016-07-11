@@ -86,6 +86,10 @@ public class DefaultSerializationManager implements SerializationManager {
     this.serializationDir = new File(serializationDir);
   }
 
+  public File getSerializationDir() {
+    return serializationDir;
+  }
+
   // --------------------------------------------------------------------
   // DATA MEMBERS
   // --------------------------------------------------------------------

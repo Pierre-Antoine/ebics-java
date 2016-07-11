@@ -45,7 +45,7 @@ public class UserPasswordHandler implements PasswordCallback {
   public char[] getPassword() {
     String		pwd;
 
-    pwd = userId + suffix;
+    pwd = suffix;
     return pwd.toCharArray();
   }
 

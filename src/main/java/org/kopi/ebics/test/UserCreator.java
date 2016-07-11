@@ -144,7 +144,11 @@ public class UserCreator extends Client {
                                                       Constants.APPLICATION_BUNDLE_NAME,
                                                       userId));
   }
-  
+
+    public User getUser(String userId){
+        return users.get(userId);
+    }
+
   //--------------------------------------------------------------------
   // JVM ENTRY POINT
   // --------------------------------------------------------------------

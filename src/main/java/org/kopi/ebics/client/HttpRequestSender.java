@@ -97,7 +97,7 @@ public class HttpRequestSender {
 
     input = request.getContent();
     method = new PostMethod(session.getUser().getPartner().getBank().getURL().toString());
-    method.getParams().setSoTimeout(30000);
+    method.getParams().setSoTimeout(100000);
     requestEntity = new InputStreamRequestEntity(input);
     method.setRequestEntity(requestEntity);
     method.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");

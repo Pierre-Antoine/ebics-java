@@ -215,8 +215,8 @@ public class Client {
   protected Map<String, Partner>        partners;
   protected Map<String, Bank>           banks;
   
-  public static String URL_EBICS_SERVER = "https://server-ebics.webank.fr:28103/WbkPortalFileTransfert/EbicsProtocol";
-  public static String BANK_NAME = "VALERIAN";
+  public static String URL_EBICS_SERVER = "https://ebics.socgen.com/ebics/EbicsServlet";
+  public static String BANK_NAME = "SOCIETE GENERALE";
   
   static {
     org.apache.xml.security.Init.init();
