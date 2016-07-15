@@ -118,6 +118,8 @@ public class DefaultConfiguration implements Configuration {
     IOUtils.createDirectories(getSSLBankCertificates());
     //Create users directory
     IOUtils.createDirectories(getUsersDirectory());
+    //Create downloads directory
+    IOUtils.createDirectories(getDownloadsDirectory());
 
     logger.setLogFile(getLogDirectory() + File.separator + getLogFileName());
     ((DefaultEbicsLogger)logger).setFileLoggingEnabled(true);
@@ -127,27 +129,30 @@ public class DefaultConfiguration implements Configuration {
     letterManager = new DefaultLetterManager(getLocale());
   }
 
-  
+
   public Locale getLocale() {
     return Locale.FRANCE;
   }
 
-  
+
   public String getLogDirectory() {
     return rootDir + File.separator + getString("log.dir.name");
   }
 
-  
+
   public String getLogFileName() {
     return getString("log.file.name");
   }
 
-  
+  public String getDownloadsDirectory(){
+    return rootDir + File.separator + getString("downloads.dir.name");
+  }
+
   public String getConfigurationFile() {
     return rootDir + File.separator + getString("conf.file.name");
   }
 
-  
+
   public String getProperty(String key) {
     if (!isConfigFileLoad) {
       return null;
@@ -160,102 +165,102 @@ public class DefaultConfiguration implements Configuration {
     return properties.getProperty(key);
   }
 
-  
+
   public String getKeystoreDirectory(EbicsUser user) {
     return getUserDirectory(user) + File.separator + getString("keystore.dir.name");
   }
 
-  
+
   public String getTransferTraceDirectory(EbicsUser user) {
     return getUserDirectory(user) + File.separator + getString("traces.dir.name");
   }
 
-  
+
   public String getSerializationDirectory() {
     return rootDir + File.separator + getString("serialization.dir.name");
   }
 
-  
+
   public String getSSLTrustedStoreDirectory() {
     return rootDir + File.separator + getString("ssltruststore.dir.name");
   }
 
-  
+
   public String getSSLKeyStoreDirectory() {
     return rootDir + File.separator + getString("sslkeystore.dir.name");
   }
 
-  
+
   public String getSSLBankCertificates() {
     return rootDir + File.separator + getString("sslbankcert.dir.name");
   }
 
-  
+
   public String getUsersDirectory() {
     return rootDir + File.separator + getString("users.dir.name");
   }
 
-  
+
   public SerializationManager getSerializationManager() {
     return serializationManager;
   }
 
-  
+
   public TraceManager getTraceManager() {
     return traceManager;
   }
 
-  
+
   public LetterManager getLetterManager() {
     return letterManager;
   }
 
-  
+
   public String getLettersDirectory(EbicsUser user) {
     return getUserDirectory(user) + File.separator + getString("letters.dir.name");
   }
 
-  
+
   public String getUserDirectory(EbicsUser user) {
     return getUsersDirectory() + File.separator + user.getUserId();
   }
 
-  
+
   public EbicsLogger getLogger() {
     return logger;
   }
 
-  
+
   public String getSignatureVersion() {
     return getString("signature.version");
   }
 
-  
+
   public String getAuthenticationVersion() {
     return getString("authentication.version");
   }
 
-  
+
   public String getEncryptionVersion() {
     return getString("encryption.version");
   }
 
-  
+
   public boolean isTraceEnabled() {
     return true;
   }
 
-  
+
   public boolean isCompressionEnabled() {
     return true;
   }
 
-  
+
   public int getRevision() {
     return 1;
   }
 
-  
+
   public String getVersion() {
     return getString("ebics.version");
   }

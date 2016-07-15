@@ -19,6 +19,7 @@
 
 package com.bialx.ebics;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -43,7 +44,7 @@ public class FDL extends Client {
         super();
     }
 
-    public void fetchFile(String path,
+    public void fetchFile(String output,
                           String userId,
                           String format,
                           Product product,
@@ -66,7 +67,7 @@ public class FDL extends Client {
         configuration.getTraceManager().setTraceDirectory(configuration.getTransferTraceDirectory(users.get(userId)));
 
         try {
-            transferManager.fetchFile(orderType, start, end, new FileOutputStream(path));
+            transferManager.fetchFile(orderType, start, end, new FileOutputStream(configuration.getRootDirectory() + File.separator + configuration.getDownloadsDirectory() + File.separator + output));
         } catch (IOException e) {
             configuration.getLogger().error(Messages.getString("download.file.error",
                             Constants.APPLICATION_BUNDLE_NAME),
@@ -79,15 +80,10 @@ public class FDL extends Client {
     }
 
     public static void main(String[] args) throws Exception {
-        String      hostId = "";
-        String      partnerId = "";
         String      userId = "";
-        String      format = "";
-        String      bankURL = "";
         Boolean     isTest = false;
         Date        startDate = null;
         Date        endDate = null;
-        String      output = "";
 
         SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMdd");
 
@@ -148,7 +144,7 @@ public class FDL extends Client {
             bankURL = commandLine.getOptionValue('f');
             System.out.println("bankURL: " + bankURL);
         }
-
+        */
         // optional values
         if (commandLine.hasOption('s')){
             startDate = dtFormat.parse(commandLine.getOptionValue('s'));
@@ -161,7 +157,7 @@ public class FDL extends Client {
         if (commandLine.hasOption('t')){
             isTest = true;
         }
-        */
+
         FDL fdl;
         PasswordCallback    pwdHandler;
         Product             product;
@@ -174,11 +170,25 @@ public class FDL extends Client {
 
         product = new Product("Bial-x EBICS FDL", Locale.FRANCE, null);
 
-        if(commandLine.hasOption("C")){
+        if(commandLine.hasOption(BialxOptions.OPTION_CREATION) && !commandLine.hasOption(BialxOptions.OPTION_DOWNLOAD)){
             if(options.checkCreationOptions(commandLine)){
                 CreationOptions co = options.loadCreationOptions(commandLine);
                 User user = fdl.createUser(co.getUserId(),co.getHostId(),co.getPartnerId(),co.getBankName(),co.getBankUrl(),pwdHandler);
                 fdl.sendHPBRequest(user,product);
+            }else{
+                fdl.configuration.getLogger().info("Vérifiez les paramètres de la commande.");
+                System.exit(0);
+            }
+        }
+
+        if(!commandLine.hasOption(BialxOptions.OPTION_CREATION) && commandLine.hasOption(BialxOptions.OPTION_DOWNLOAD)){
+            if(options.checkDownloadOptions(commandLine)){
+                DownloadOptions dop= options.loadDownloadOptions(commandLine);
+                fdl.loadUser(dop.getHostId(),dop.getPartnerId(),dop.getUserId(),pwdHandler);
+                fdl.fetchFile(dop.getDestination(),dop.getUserId(),dop.getFormat(),product,OrderType.FDL,isTest,startDate,endDate);
+            }else{
+                fdl.configuration.getLogger().info("Vérifiez les paramètres de la commande.");
+                System.exit(0);
             }
         }
 

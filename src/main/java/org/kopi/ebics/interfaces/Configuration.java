@@ -43,6 +43,12 @@ public interface Configuration {
   public String getLogDirectory();
 
   /**
+   * Returns the default downloads directory of the application
+   * @return the default download directory
+   */
+  public String getDownloadsDirectory();
+
+  /**
    * Returns the default log file name of the application
    * @return the default log file name
    */
