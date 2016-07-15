@@ -99,12 +99,10 @@ public class DefaultConfiguration implements Configuration {
     isConfigFileLoad = true;
   }
 
-  @Override
   public String getRootDirectory() {
     return rootDir;
   }
 
-  @Override
   public void init() {
     //Create the root directory
     IOUtils.createDirectories(getRootDirectory());
@@ -129,27 +127,27 @@ public class DefaultConfiguration implements Configuration {
     letterManager = new DefaultLetterManager(getLocale());
   }
 
-  @Override
+  
   public Locale getLocale() {
     return Locale.FRANCE;
   }
 
-  @Override
+  
   public String getLogDirectory() {
     return rootDir + File.separator + getString("log.dir.name");
   }
 
-  @Override
+  
   public String getLogFileName() {
     return getString("log.file.name");
   }
 
-  @Override
+  
   public String getConfigurationFile() {
     return rootDir + File.separator + getString("conf.file.name");
   }
 
-  @Override
+  
   public String getProperty(String key) {
     if (!isConfigFileLoad) {
       return null;
@@ -162,102 +160,102 @@ public class DefaultConfiguration implements Configuration {
     return properties.getProperty(key);
   }
 
-  @Override
+  
   public String getKeystoreDirectory(EbicsUser user) {
     return getUserDirectory(user) + File.separator + getString("keystore.dir.name");
   }
 
-  @Override
+  
   public String getTransferTraceDirectory(EbicsUser user) {
     return getUserDirectory(user) + File.separator + getString("traces.dir.name");
   }
 
-  @Override
+  
   public String getSerializationDirectory() {
     return rootDir + File.separator + getString("serialization.dir.name");
   }
 
-  @Override
+  
   public String getSSLTrustedStoreDirectory() {
     return rootDir + File.separator + getString("ssltruststore.dir.name");
   }
 
-  @Override
+  
   public String getSSLKeyStoreDirectory() {
     return rootDir + File.separator + getString("sslkeystore.dir.name");
   }
 
-  @Override
+  
   public String getSSLBankCertificates() {
     return rootDir + File.separator + getString("sslbankcert.dir.name");
   }
 
-  @Override
+  
   public String getUsersDirectory() {
     return rootDir + File.separator + getString("users.dir.name");
   }
 
-  @Override
+  
   public SerializationManager getSerializationManager() {
     return serializationManager;
   }
 
-  @Override
+  
   public TraceManager getTraceManager() {
     return traceManager;
   }
 
-  @Override
+  
   public LetterManager getLetterManager() {
     return letterManager;
   }
 
-  @Override
+  
   public String getLettersDirectory(EbicsUser user) {
     return getUserDirectory(user) + File.separator + getString("letters.dir.name");
   }
 
-  @Override
+  
   public String getUserDirectory(EbicsUser user) {
     return getUsersDirectory() + File.separator + user.getUserId();
   }
 
-  @Override
+  
   public EbicsLogger getLogger() {
     return logger;
   }
 
-  @Override
+  
   public String getSignatureVersion() {
     return getString("signature.version");
   }
 
-  @Override
+  
   public String getAuthenticationVersion() {
     return getString("authentication.version");
   }
 
-  @Override
+  
   public String getEncryptionVersion() {
     return getString("encryption.version");
   }
 
-  @Override
+  
   public boolean isTraceEnabled() {
     return true;
   }
 
-  @Override
+  
   public boolean isCompressionEnabled() {
     return true;
   }
 
-  @Override
+  
   public int getRevision() {
     return 1;
   }
 
-  @Override
+  
   public String getVersion() {
     return getString("ebics.version");
   }

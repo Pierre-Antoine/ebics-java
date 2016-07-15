@@ -19,18 +19,15 @@
 
 package com.bialx.ebics;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 import org.kopi.ebics.client.FileTransfer;
+import org.kopi.ebics.client.User;
 import org.kopi.ebics.exception.EbicsException;
 import org.kopi.ebics.interfaces.PasswordCallback;
 import org.kopi.ebics.messages.Messages;
@@ -94,21 +91,15 @@ public class FDL extends Client {
 
         SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMdd");
 
-        CommandLineParser parser = new BasicParser();
-        Options options = new Options();
-        options.addOption("h", "host", true, "EBICS Host ID");
-        options.addOption("p", "partner", true, "Registred Partner ID for your user");
-        options.addOption("u", "user", true, "User ID to initiate" );
-        options.addOption("f", "format", true, "Format type to request" );
-        options.addOption("o", "output", true, "Output file location" );
-        options.addOption("b", "bankurl", true, "Bank Ebics URL" );
-        options.addOption("s", "start", true, "Start date" );
-        options.addOption("e", "end", true, "End date" );
-        options.addOption("t", "test", false, "Test request" );
+        CommandLineParser parser = new DefaultParser();
+
+        BialxOptions options = new BialxOptions();
+
+
 
         // Parse the program arguments
         CommandLine commandLine = parser.parse(options, args);
-
+        /*
         // Mandatory values
         if (!commandLine.hasOption('h')) {
             System.out.println("Host-ID is mandatory");
@@ -170,14 +161,28 @@ public class FDL extends Client {
         if (commandLine.hasOption('t')){
             isTest = true;
         }
-
+        */
         FDL fdl;
         PasswordCallback    pwdHandler;
         Product             product;
         String              filePath;
 
         fdl = new FDL();
+
+
+        pwdHandler = new UserPasswordHandler(userId, "pampam");
+
         product = new Product("Bial-x EBICS FDL", Locale.FRANCE, null);
+
+        if(commandLine.hasOption("C")){
+            if(options.checkCreationOptions(commandLine)){
+                CreationOptions co = options.loadCreationOptions(commandLine);
+                User user = fdl.createUser(co.getUserId(),co.getHostId(),co.getPartnerId(),co.getBankName(),co.getBankUrl(),pwdHandler);
+                fdl.sendHPBRequest(user,product);
+            }
+        }
+
+        /*
         pwdHandler = new UserPasswordHandler(userId, "2012");
 
         // Load alredy created user
@@ -191,7 +196,9 @@ public class FDL extends Client {
                 OrderType.FDL,
                 isTest,
                 startDate,
-                endDate);
+                endDate);*/
+
+        fdl.quit();
     }
 
 }

@@ -182,7 +182,7 @@ public class User implements EbicsUser, Savable {
     manager.load(keyStorePath, passwordCallback);
   }
 
-  @Override
+  
   public void save(ObjectOutputStream oos) throws IOException {
     oos.writeUTF(userId);
     oos.writeUTF(name);
@@ -319,7 +319,7 @@ public class User implements EbicsUser, Savable {
     return needSave;
   }
 
-  @Override
+  
   public byte[] getA005Certificate() throws EbicsException {
     try {
       return a005Certificate.getEncoded();
@@ -328,7 +328,7 @@ public class User implements EbicsUser, Savable {
     }
   }
 
-  @Override
+  
   public byte[] getE002Certificate() throws EbicsException {
     try {
       return e002Certificate.getEncoded();
@@ -337,7 +337,7 @@ public class User implements EbicsUser, Savable {
     }
   }
 
-  @Override
+  
   public byte[] getX002Certificate() throws EbicsException {
     try {
       return x002Certificate.getEncoded();
@@ -346,88 +346,88 @@ public class User implements EbicsUser, Savable {
     }
   }
 
-  @Override
+  
   public void setA005Certificate(X509Certificate a005Certificate) {
     this.a005Certificate = a005Certificate;
     needSave = true;
   }
 
-  @Override
+  
   public void setE002Certificate(X509Certificate e002Certificate) {
     this.e002Certificate = e002Certificate;
     needSave = true;
   }
 
-  @Override
+  
   public void setX002Certificate(X509Certificate x002Certificate) {
     this.x002Certificate = x002Certificate;
     needSave = true;
   }
 
-  @Override
+  
   public RSAPublicKey getA005PublicKey() {
     return (RSAPublicKey) a005Certificate.getPublicKey();
   }
 
-  @Override
+  
   public RSAPublicKey getE002PublicKey() {
     return (RSAPublicKey) e002Certificate.getPublicKey();
   }
 
-  @Override
+  
   public RSAPublicKey getX002PublicKey() {
     return (RSAPublicKey) x002Certificate.getPublicKey();
   }
 
-  @Override
+  
   public void setA005PrivateKey(PrivateKey a005PrivateKey) {
     this.a005PrivateKey = a005PrivateKey;
     needSave = true;
   }
 
-  @Override
+  
   public void setX002PrivateKey(PrivateKey x002PrivateKey) {
     this.x002PrivateKey = x002PrivateKey;
     needSave = true;
   }
 
-  @Override
+  
   public void setE002PrivateKey(PrivateKey e002PrivateKey) {
     this.e002PrivateKey = e002PrivateKey;
     needSave = true;
   }
 
-  @Override
+  
   public String getSecurityMedium() {
     return "0000";
   }
 
-  @Override
+  
   public EbicsPartner getPartner() {
     return partner;
   }
 
-  @Override
+  
   public String getUserId() {
     return userId;
   }
 
-  @Override
+  
   public String getName() {
     return name;
   }
 
-  @Override
+  
   public String getDN() {
     return dn;
   }
 
-  @Override
+  
   public PasswordCallback getPasswordCallback() {
     return passwordCallback;
   }
 
-  @Override
+  
   public String getSaveName() {
     return userId + ".cer";
   }
@@ -464,7 +464,7 @@ public class User implements EbicsUser, Savable {
    *   <li> The digest is already canonized in the {@link SignedInfo#sign(byte[]) sign(byte[])}
    * </ol>
    */
-  @Override
+  
   public byte[] authenticate(byte[] digest) throws GeneralSecurityException {
     Signature			signature;
 
@@ -519,7 +519,7 @@ public class User implements EbicsUser, Savable {
    * algorithm. This signature is then put in a {@link UserSignature} XML object that
    * will be sent to the EBICS server. 
    */
-  @Override
+  
   public byte[] sign(byte[] digest) throws IOException, GeneralSecurityException {
     Signature signature = Signature.getInstance("SHA256WithRSA", BouncyCastleProvider.PROVIDER_NAME);
     signature.initSign(a005PrivateKey);
@@ -540,7 +540,7 @@ public class User implements EbicsUser, Savable {
    * key DEK is obtained from the lowest-value 128 bits of PDEK, this is split into the individual
    * keys DEK<SUB>left</SUB> and DEK<SUB>right</SUB>.
    */
-  @Override
+  
   public byte[] decrypt(byte[] encryptedData, byte[] transactionKey)
     throws EbicsException, GeneralSecurityException, IOException
   {

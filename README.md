@@ -62,3 +62,32 @@ Pour faire tourner le programme, il faut lancer la ligne de commande suivante :
 ```
 java -cp ebics-1.0.2.jar org.kopi.ebics.test.FULRequestor.java [arguments]
 ```
+
+Génération des certificats P12
+------------------------------
+
+```
+openssl pkcs12 -in [NOM_CERTIFICAT] Auth.pfx -nocerts -out [USER_ID]-X002.key -nodes
+openssl pkcs12 -in [NOM_CERTIFICAT] Auth.pfx -nokeys -out [USER_ID]-X002.cert
+
+openssl pkcs12 -in [NOM_CERTIFICAT] Crypt.pfx -nocerts -out [USER_ID]-E002.key -nodes
+openssl pkcs12 -in [NOM_CERTIFICAT] Crypt.pfx -nokeys -out [USER_ID]-E002.cert
+
+openssl pkcs12 -in [NOM_CERTIFICAT] Sign.pfx -nocerts -out [USER_ID]-A005.key -nodes
+openssl pkcs12 -in [NOM_CERTIFICAT] Sign.pfx -nokeys -out [USER_ID]-A005.cert
+
+openssl rsa -in [USER_ID]-X002 -out [USER_ID]-X002
+openssl rsa -in [USER_ID]-A005 -out [USER_ID]-A005
+openssl rsa -in [USER_ID]-E002 -out [USER_ID]-E002
+
+openssl pkcs12 -export -name [USER_ID]-A005 -in [USER_ID]-A005.cert -inkey [USER_ID]-A005.key -out [USER_ID]-A005.p12
+openssl pkcs12 -export -name [USER_ID]-X002 -in [USER_ID]-X002.cert -inkey [USER_ID]-X002.key -out [USER_ID]-X002.p12
+openssl pkcs12 -export -name [USER_ID]-E002 -in [USER_ID]-E002.cert -inkey [USER_ID]-E002.key -out [USER_ID]-E002.p12
+
+[JAVA_PATH]/keytool.exe -importkeystore -destkeystore [USER_ID].jks -srckeystore [USER_ID]-E002.p12 -srcstoretype pkcs12 -alias [USER_ID]-E002 -srcstorepass '[MOT DE PASSE]'
+[JAVA_PATH]/keytool.exe -importkeystore -destkeystore [USER_ID].jks -srckeystore [USER_ID]-X002.p12 -srcstoretype pkcs12 -alias [USER_ID]-X002 -srcstorepass '[MOT DE PASSE]'
+[JAVA_PATH]/keytool.exe -importkeystore -destkeystore [USER_ID].jks -srckeystore [USER_ID]-A005.p12 -srcstoretype pkcs12 -alias [USER_ID]-A005 -srcstorepass '[MOT DE PASSE]'
+
+[JAVA_PATH]/keytool.exe -importkeystore -srckeystore [USER_ID].jks -destkeystore [USER_ID].p12 -srcstoretype JKS -deststoretype PKCS12 -srcstorepass [MOT DE PASSE]
+```
+
