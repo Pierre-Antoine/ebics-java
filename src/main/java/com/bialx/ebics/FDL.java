@@ -69,7 +69,7 @@ public class FDL extends Client {
         configuration.getTraceManager().setTraceDirectory(configuration.getTransferTraceDirectory(users.get(userId)));
 
         try {
-            transferManager.fetchFile(orderType, start, end, new FileOutputStream(configuration.getRootDirectory() + File.separator + configuration.getDownloadsDirectory() + File.separator + output));
+            transferManager.fetchFile(orderType, start, end, new FileOutputStream(configuration.getDownloadsDirectory() + File.separator + output));
         } catch (IOException e) {
             configuration.getLogger().error(Messages.getString("download.file.error",
                             Constants.APPLICATION_BUNDLE_NAME),
