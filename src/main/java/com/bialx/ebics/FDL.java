@@ -40,6 +40,8 @@ import org.kopi.ebics.utils.Constants;
 
 public class FDL extends Client {
 
+    private static final String CERT_PASSWORD = "korian";
+
     public FDL() {
         super();
     }
@@ -91,60 +93,9 @@ public class FDL extends Client {
 
         BialxOptions options = new BialxOptions();
 
-
-
         // Parse the program arguments
         CommandLine commandLine = parser.parse(options, args);
-        /*
-        // Mandatory values
-        if (!commandLine.hasOption('h')) {
-            System.out.println("Host-ID is mandatory");
-            System.exit(0);
-        } else {
-            hostId = commandLine.getOptionValue('h');
-            System.out.println("host: " + hostId);
-        }
 
-        if (!commandLine.hasOption('p')) {
-            System.out.println("Partner-ID is mandatory");
-            System.exit(0);
-        } else {
-            partnerId = commandLine.getOptionValue('p');
-            System.out.println("partnerId: " + partnerId);
-        }
-
-        if (!commandLine.hasOption('u')) {
-            System.out.println("User-ID is mandatory");
-            System.exit(0);
-        } else {
-            userId = commandLine.getOptionValue('u');
-            System.out.println("userId: " + userId);
-        }
-
-        if (!commandLine.hasOption('f')) {
-            System.out.println("Format is mandatory");
-            System.exit(0);
-        } else {
-            format = commandLine.getOptionValue('f');
-            System.out.println("format: " + format);
-        }
-
-        if (!commandLine.hasOption('o')) {
-            System.out.println("Output file location is mandatory");
-            System.exit(0);
-        } else {
-            output = commandLine.getOptionValue('f');
-            System.out.println("output: " + output);
-        }
-
-        if (!commandLine.hasOption('b')) {
-            System.out.println("Bank Ebics URL is mandatory");
-            System.exit(0);
-        } else {
-            bankURL = commandLine.getOptionValue('f');
-            System.out.println("bankURL: " + bankURL);
-        }
-        */
         // optional values
         if (commandLine.hasOption('s')){
             startDate = dtFormat.parse(commandLine.getOptionValue('s'));
@@ -166,7 +117,7 @@ public class FDL extends Client {
         fdl = new FDL();
 
 
-        pwdHandler = new UserPasswordHandler(userId, "pampam");
+        pwdHandler = new UserPasswordHandler(userId, CERT_PASSWORD);
 
         product = new Product("Bial-x EBICS FDL", Locale.FRANCE, null);
 
@@ -191,22 +142,6 @@ public class FDL extends Client {
                 System.exit(0);
             }
         }
-
-        /*
-        pwdHandler = new UserPasswordHandler(userId, "2012");
-
-        // Load alredy created user
-        fdl.loadUser(hostId, partnerId, userId, pwdHandler);
-
-        // Send FDL Requets
-        fdl.fetchFile(output,
-                userId,
-                format,
-                product,
-                OrderType.FDL,
-                isTest,
-                startDate,
-                endDate);*/
 
         fdl.quit();
     }
