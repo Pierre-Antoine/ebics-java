@@ -112,10 +112,8 @@ public class FDL extends Client {
         FDL fdl;
         PasswordCallback    pwdHandler;
         Product             product;
-        String              filePath;
 
         fdl = new FDL();
-
 
         pwdHandler = new UserPasswordHandler(userId, CERT_PASSWORD);
 
@@ -136,11 +134,16 @@ public class FDL extends Client {
             if(options.checkDownloadOptions(commandLine)){
                 DownloadOptions dop= options.loadDownloadOptions(commandLine);
                 fdl.loadUser(dop.getHostId(),dop.getPartnerId(),dop.getUserId(),pwdHandler);
-                fdl.fetchFile(dop.getDestination(),dop.getUserId(),dop.getFormat(),product,OrderType.FDL,isTest,startDate,endDate);
+                fdl.fetchFile(dop.getDestination(), dop.getUserId(), dop.getFormat(), product, OrderType.FDL, isTest, startDate, endDate);
             }else{
                 fdl.configuration.getLogger().info("Vérifiez les paramètres de la commande.");
                 System.exit(0);
             }
+        }
+
+        if(commandLine.hasOption(BialxOptions.OPTION_DOWNLOAD) && commandLine.hasOption(BialxOptions.OPTION_CREATION)){
+            fdl.configuration.getLogger().error("Impossible d'avoir les options C et D dans la même commande.");
+            System.exit(0);
         }
 
         fdl.quit();
