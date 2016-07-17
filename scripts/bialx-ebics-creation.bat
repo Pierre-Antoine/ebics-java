@@ -10,4 +10,4 @@
 :: - p : le paramètre partner ID
 :: **********************************************************************
 
-java -jar bialx-ebics-1.0.jar -C -h <HOST_ID> -u <USER_ID> -b <URL_BANQUE_EBICS> -B <NOM_BANQUE> -p <PARTNER_ID>
+java -jar %~dp0bialx-ebics-1.0.jar -C -h <HOST_ID> -u <USER_ID> -b <URL_BANQUE_EBICS> -B <NOM_BANQUE> -p <PARTNER_ID>

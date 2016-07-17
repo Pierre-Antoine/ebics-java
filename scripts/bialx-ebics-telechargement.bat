@@ -13,4 +13,4 @@
 :: -o : Nom du fichier de sortie
 :: **********************************************************************
 
-java -jar bialx-ebics-1.0.jar -D -t -h <HOST_ID> -u <USER_ID> -p <PARTNER_ID> -f <FORMAT> -s <DEBUT> -e <FIN> -o <FICHIER>
+java -jar %~dp0bialx-ebics-1.0.jar -D -t -h <HOST_ID> -u <USER_ID> -p <PARTNER_ID> -f <FORMAT> -s <DEBUT> -e <FIN> -o <FICHIER>
