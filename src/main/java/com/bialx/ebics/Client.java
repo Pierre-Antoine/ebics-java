@@ -287,6 +287,8 @@ public class Client {
 
         User user = new User(partner,userId,"BialX",keystorePath,pwdHandler);
 
+        createUserDirectories(user);
+
         configuration.getSerializationManager().serialize(bank);
         configuration.getSerializationManager().serialize(partner);
         configuration.getSerializationManager().serialize(user);

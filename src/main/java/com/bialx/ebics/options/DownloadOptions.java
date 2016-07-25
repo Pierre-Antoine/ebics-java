@@ -1,4 +1,4 @@
-package com.bialx.ebics;
+package com.bialx.ebics.options;
 
 /**
  * Created by pierre-antoine.marc on 15/07/2016.

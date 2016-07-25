@@ -1,4 +1,4 @@
-package com.bialx.ebics;
+package com.bialx.ebics.options;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;

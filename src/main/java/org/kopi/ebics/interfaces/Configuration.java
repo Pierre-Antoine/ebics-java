@@ -210,4 +210,9 @@ public interface Configuration {
    * @return the version of the EBICS protocol.
    */
   public String getVersion();
+
+  public String getProxyHost();
+  public String getProxyPort();
+  public String getProxyUser();
+  public String getProxyPassword();
 }

@@ -77,7 +77,7 @@ public class DefaultConfiguration implements Configuration {
     try {
       return bundle.getString(key);
     } catch(MissingResourceException e) {
-      return "!!" + key + "!!";
+      return "";
     }
   }
 
@@ -263,6 +263,22 @@ public class DefaultConfiguration implements Configuration {
 
   public String getVersion() {
     return getString("ebics.version");
+  }
+
+  public String getProxyHost() {
+    return getString("http.proxy.host");
+  }
+
+  public String getProxyPort() {
+    return getString("http.proxy.port");
+  }
+
+  public String getProxyUser() {
+    return getString("http.proxy.user");
+  }
+
+  public String getProxyPassword() {
+    return getString("http.proxy.password");
   }
 
   // --------------------------------------------------------------------

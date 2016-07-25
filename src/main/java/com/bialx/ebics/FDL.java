@@ -26,6 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import com.bialx.ebics.options.BialxOptions;
+import com.bialx.ebics.options.CreationOptions;
+import com.bialx.ebics.options.DownloadOptions;
 import org.apache.commons.cli.*;
 import org.kopi.ebics.client.FileTransfer;
 import org.kopi.ebics.client.User;

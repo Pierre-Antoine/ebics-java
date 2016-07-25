@@ -70,7 +70,7 @@ public class HttpRequestSender {
     int				retCode;
 
     httpClient = new HttpClient();
-    proxyConfiguration = session.getConfiguration().getProperty("http.proxy.host");
+    proxyConfiguration = session.getConfiguration().getProxyHost();
 
     if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
       HostConfiguration		hostConfig;
@@ -78,17 +78,18 @@ public class HttpRequestSender {
       int			proxyPort;
 
       hostConfig = httpClient.getHostConfiguration();
-      proxyHost = session.getConfiguration().getProperty("http.proxy.host").trim();
-      proxyPort = Integer.parseInt(session.getConfiguration().getProperty("http.proxy.port").trim());
+      proxyHost = session.getConfiguration().getProxyHost().trim();
+      proxyPort = Integer.parseInt(session.getConfiguration().getProxyPort().trim());
       hostConfig.setProxy(proxyHost, proxyPort);
-      if (!session.getConfiguration().getProperty("http.proxy.user").equals("")) {
+      if (!session.getConfiguration().getProxyUser().equals("")) {
 	String				user;
 	String				pwd;
 	UsernamePasswordCredentials	credentials;
 	AuthScope			authscope;
 
-	user = session.getConfiguration().getProperty("http.proxy.user").trim();
-	pwd = session.getConfiguration().getProperty("http.proxy.password").trim();
+	user = session.getConfiguration().getProxyUser().trim();
+        session.getConfiguration().getLogger().info("User pour le proxy : " + user);
+	pwd = session.getConfiguration().getProxyPassword().trim();
 	credentials = new UsernamePasswordCredentials(user, pwd);
 	authscope = new AuthScope(proxyHost, proxyPort);
 	httpClient.getState().setProxyCredentials(authscope, credentials);
