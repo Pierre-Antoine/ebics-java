@@ -281,7 +281,7 @@ public class Client {
         String keystorePath = configuration.getUsersDirectory() + "/" + userId + "/keystore/" + userId +".p12";
 
         URL url = new URL(bankUrl);
-        Bank bank = this.createBank(url, "Societe Generale", hostId);
+        Bank bank = this.createBank(url, bankName, hostId);
 
         Partner partner = this.createPartner(bank, partnerId);
 
@@ -351,8 +351,8 @@ public class Client {
     protected Map<String, Partner>        partners;
     protected Map<String, Bank>           banks;
 
-    public static String URL_EBICS_SERVER = "https://ebics.socgen.com/ebics/EbicsServlet";
-    public static String BANK_NAME = "SOCIETE GENERALE";
+    public static String URL_EBICS_SERVER = "";
+    public static String BANK_NAME = "";
 
     static {
         org.apache.xml.security.Init.init();
