@@ -21,14 +21,22 @@ package org.kopi.ebics.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.*;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.kopi.ebics.interfaces.ContentFactory;
 import org.kopi.ebics.io.InputStreamContentFactory;
 import org.kopi.ebics.session.EbicsSession;
@@ -64,49 +72,60 @@ public class HttpRequestSender {
   public final int send(ContentFactory request) throws IOException {
     HttpClient			httpClient;
     String                      proxyConfiguration;
-    PostMethod			method;
-    RequestEntity		requestEntity;
+    HttpPost			method;
+    HttpEntity requestEntity;
     InputStream			input;
-    int				retCode;
-
-    httpClient = new HttpClient();
+    HttpResponse response;
+    RequestConfig config = RequestConfig.copy(RequestConfig.DEFAULT).setSocketTimeout(100000).build();
+    httpClient = HttpClientBuilder.create().build();
     proxyConfiguration = session.getConfiguration().getProxyHost();
 
     if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
-      HostConfiguration		hostConfig;
       String			proxyHost;
       int			proxyPort;
 
-      hostConfig = httpClient.getHostConfiguration();
       proxyHost = session.getConfiguration().getProxyHost().trim();
       proxyPort = Integer.parseInt(session.getConfiguration().getProxyPort().trim());
-      hostConfig.setProxy(proxyHost, proxyPort);
       if (!session.getConfiguration().getProxyUser().equals("")) {
-	String				user;
-	String				pwd;
-	UsernamePasswordCredentials	credentials;
-	AuthScope			authscope;
+        String				user;
+        String				pwd;
+        NTCredentials credentials;
+        AuthScope authscope;
+        HttpHost proxy = new HttpHost(proxyHost,proxyPort);
 
-	user = session.getConfiguration().getProxyUser().trim();
+        user = session.getConfiguration().getProxyUser().trim();
         session.getConfiguration().getLogger().info("User pour le proxy : " + user);
-	pwd = session.getConfiguration().getProxyPassword().trim();
-	credentials = new UsernamePasswordCredentials(user, pwd);
-	authscope = new AuthScope(proxyHost, proxyPort);
-	httpClient.getState().setProxyCredentials(authscope, credentials);
+        pwd = session.getConfiguration().getProxyPassword().trim();
+        session.getConfiguration().getLogger().info("Mdp pour le proxy : " + pwd);
+        credentials = new NTCredentials(user, pwd,"localhost","AD");
+        authscope = new AuthScope(proxyHost,proxyPort);
+
+        config = RequestConfig.custom().setProxy(proxy).setSocketTimeout(100000).setConnectTimeout(100000).build();
+
+        CredentialsProvider cp = new BasicCredentialsProvider();
+        cp.setCredentials(authscope,credentials);
+
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        clientBuilder.useSystemProperties();
+        clientBuilder.setProxy(proxy);
+        clientBuilder.setDefaultCredentialsProvider(cp);
+        clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
+
+        httpClient = clientBuilder.build();
       }
     }
-
     input = request.getContent();
-    method = new PostMethod(session.getUser().getPartner().getBank().getURL().toString());
-    method.getParams().setSoTimeout(100000);
-    requestEntity = new InputStreamRequestEntity(input);
-    method.setRequestEntity(requestEntity);
-    method.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");
-    retCode = -1;
-    retCode = httpClient.executeMethod(method);
-    response = new InputStreamContentFactory(method.getResponseBodyAsStream());
+    method = new HttpPost(session.getUser().getPartner().getBank().getURL().toString());
 
-    return retCode;
+    requestEntity = EntityBuilder.create().setStream(input).build();
+    method.setEntity(requestEntity);
+    method.setHeader("Content-type", "text/xml; charset=ISO-8859-1");
+    method.setConfig(config);
+
+    response = httpClient.execute(method);
+    this.response = new InputStreamContentFactory(response.getEntity().getContent());
+
+    return response.getStatusLine().getStatusCode();
   }
 
   /**
