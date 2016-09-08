@@ -19,27 +19,27 @@
 
 package org.kopi.ebics.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.*;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.ProxyAuthenticationStrategy;
 import org.kopi.ebics.interfaces.ContentFactory;
 import org.kopi.ebics.io.InputStreamContentFactory;
 import org.kopi.ebics.session.EbicsSession;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -94,16 +94,19 @@ public class HttpRequestSender {
         HttpHost proxy = new HttpHost(proxyHost,proxyPort);
 
         user = session.getConfiguration().getProxyUser().trim();
-        session.getConfiguration().getLogger().info("User pour le proxy : " + user);
         pwd = session.getConfiguration().getProxyPassword().trim();
-        session.getConfiguration().getLogger().info("Mdp pour le proxy : " + pwd);
+
         credentials = new NTCredentials(user, pwd,"localhost","AD");
-        authscope = new AuthScope(proxyHost,proxyPort);
+        authscope = new AuthScope(proxyHost,proxyPort, AuthSchemes.NTLM);
+
+        UsernamePasswordCredentials basicCreds = new UsernamePasswordCredentials(user,pwd);
+        AuthScope basicScope = new AuthScope(proxyHost,proxyPort);
 
         config = RequestConfig.custom().setProxy(proxy).setSocketTimeout(100000).setConnectTimeout(100000).build();
 
         CredentialsProvider cp = new BasicCredentialsProvider();
-        cp.setCredentials(authscope,credentials);
+        cp.setCredentials(authscope, credentials);
+        //cp.setCredentials(basicScope,basicCreds);
 
         HttpClientBuilder clientBuilder = HttpClientBuilder.create();
         clientBuilder.useSystemProperties();

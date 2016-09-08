@@ -125,6 +125,11 @@ public class FDL extends Client {
         if(commandLine.hasOption(BialxOptions.OPTION_CREATION) && !commandLine.hasOption(BialxOptions.OPTION_DOWNLOAD)){
             if(options.checkCreationOptions(commandLine)){
                 CreationOptions co = options.loadCreationOptions(commandLine);
+                fdl.configuration.getLogger().info(String.format("Banque : %s",co.getBankName()));
+                fdl.configuration.getLogger().info(String.format("Host : %s",co.getHostId()));
+                fdl.configuration.getLogger().info(String.format("URL : %s",co.getBankUrl()));
+                fdl.configuration.getLogger().info(String.format("Partner : %s",co.getPartnerId()));
+                fdl.configuration.getLogger().info(String.format("User : %s",co.getUserId()));
                 User user = fdl.createUser(co.getUserId(),co.getHostId(),co.getPartnerId(),co.getBankName(),co.getBankUrl(),pwdHandler);
                 fdl.sendHPBRequest(user,product);
             }else{
@@ -136,6 +141,12 @@ public class FDL extends Client {
         if(!commandLine.hasOption(BialxOptions.OPTION_CREATION) && commandLine.hasOption(BialxOptions.OPTION_DOWNLOAD)){
             if(options.checkDownloadOptions(commandLine)){
                 DownloadOptions dop= options.loadDownloadOptions(commandLine);
+                fdl.configuration.getLogger().info(String.format("Banque : %s",dop.getHostId()));
+                fdl.configuration.getLogger().info(String.format("Host : %s",dop.getHostId()));
+                fdl.configuration.getLogger().info(String.format("Partner : %s",dop.getPartnerId()));
+                fdl.configuration.getLogger().info(String.format("User : %s",dop.getUserId()));
+                fdl.configuration.getLogger().info(String.format("Format : %s",dop.getFormat()));
+                fdl.configuration.getLogger().info(String.format("Destination : %s",dop.getDestination()));
                 fdl.loadUser(dop.getHostId(),dop.getPartnerId(),dop.getUserId(),pwdHandler);
                 fdl.fetchFile(dop.getDestination(), dop.getUserId(), dop.getFormat(), product, OrderType.FDL, isTest, startDate, endDate);
             }else{
