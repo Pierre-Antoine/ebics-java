@@ -147,7 +147,13 @@ public class FDL extends Client {
                 fdl.configuration.getLogger().info(String.format("User : %s",dop.getUserId()));
                 fdl.configuration.getLogger().info(String.format("Format : %s",dop.getFormat()));
                 fdl.configuration.getLogger().info(String.format("Destination : %s",dop.getDestination()));
-                fdl.loadUser(dop.getHostId(),dop.getPartnerId(),dop.getUserId(),pwdHandler);
+                if(startDate != null) {
+                    fdl.configuration.getLogger().info(String.format("Date début : %s", dtFormat.format(startDate)));
+                }
+                if(endDate != null) {
+                    fdl.configuration.getLogger().info(String.format("Date fin : %s", dtFormat.format(endDate)));
+                }
+                fdl.loadUser(dop.getHostId(), dop.getPartnerId(), dop.getUserId(), pwdHandler);
                 fdl.fetchFile(dop.getDestination(), dop.getUserId(), dop.getFormat(), product, OrderType.FDL, isTest, startDate, endDate);
             }else{
                 fdl.configuration.getLogger().info("Vérifiez les paramètres de la commande.");
