@@ -19,27 +19,19 @@
 
 package org.kopi.ebics.client;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.AuthSchemes;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.ProxyAuthenticationStrategy;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.kopi.ebics.interfaces.ContentFactory;
 import org.kopi.ebics.io.InputStreamContentFactory;
 import org.kopi.ebics.session.EbicsSession;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 
 /**
@@ -72,63 +64,48 @@ public class HttpRequestSender {
   public final int send(ContentFactory request) throws IOException {
     HttpClient			httpClient;
     String                      proxyConfiguration;
-    HttpPost			method;
-    HttpEntity requestEntity;
+    PostMethod			method;
+    RequestEntity		requestEntity;
     InputStream			input;
-    HttpResponse response;
-    RequestConfig config = RequestConfig.copy(RequestConfig.DEFAULT).setSocketTimeout(100000).build();
-    httpClient = HttpClientBuilder.create().build();
+    int				retCode;
+
+    httpClient = new HttpClient();
     proxyConfiguration = session.getConfiguration().getProxyHost();
 
     if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
+      HostConfiguration		hostConfig;
       String			proxyHost;
       int			proxyPort;
 
+      hostConfig = httpClient.getHostConfiguration();
       proxyHost = session.getConfiguration().getProxyHost().trim();
       proxyPort = Integer.parseInt(session.getConfiguration().getProxyPort().trim());
+      hostConfig.setProxy(proxyHost, proxyPort);
       if (!session.getConfiguration().getProxyUser().equals("")) {
         String				user;
         String				pwd;
-        NTCredentials credentials;
-        AuthScope authscope;
-        HttpHost proxy = new HttpHost(proxyHost,proxyPort);
+        UsernamePasswordCredentials	credentials;
+        AuthScope			authscope;
 
         user = session.getConfiguration().getProxyUser().trim();
         pwd = session.getConfiguration().getProxyPassword().trim();
-
-        credentials = new NTCredentials(user, pwd,"localhost","AD");
-        authscope = new AuthScope(proxyHost,proxyPort, AuthSchemes.NTLM);
-
-        UsernamePasswordCredentials basicCreds = new UsernamePasswordCredentials(user,pwd);
-        AuthScope basicScope = new AuthScope(proxyHost,proxyPort);
-
-        config = RequestConfig.custom().setProxy(proxy).setSocketTimeout(100000).setConnectTimeout(100000).build();
-
-        CredentialsProvider cp = new BasicCredentialsProvider();
-        cp.setCredentials(authscope, credentials);
-        //cp.setCredentials(basicScope,basicCreds);
-
-        HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-        clientBuilder.useSystemProperties();
-        clientBuilder.setProxy(proxy);
-        clientBuilder.setDefaultCredentialsProvider(cp);
-        clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
-
-        httpClient = clientBuilder.build();
+        credentials = new UsernamePasswordCredentials(user, pwd);
+        authscope = new AuthScope(proxyHost, proxyPort);
+        httpClient.getState().setProxyCredentials(authscope, credentials);
       }
     }
+
     input = request.getContent();
-    method = new HttpPost(session.getUser().getPartner().getBank().getURL().toString());
+    method = new PostMethod(session.getUser().getPartner().getBank().getURL().toString());
+    method.getParams().setSoTimeout(100000);
+    requestEntity = new InputStreamRequestEntity(input);
+    method.setRequestEntity(requestEntity);
+    method.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");
+    retCode = -1;
+    retCode = httpClient.executeMethod(method);
+    response = new InputStreamContentFactory(method.getResponseBodyAsStream());
 
-    requestEntity = EntityBuilder.create().setStream(input).build();
-    method.setEntity(requestEntity);
-    method.setHeader("Content-type", "text/xml; charset=ISO-8859-1");
-    method.setConfig(config);
-
-    response = httpClient.execute(method);
-    this.response = new InputStreamContentFactory(response.getEntity().getContent());
-
-    return response.getStatusLine().getStatusCode();
+    return retCode;
   }
 
   /**
